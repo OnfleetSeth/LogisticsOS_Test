@@ -6,12 +6,12 @@ import requests
 import datetime
 import time
 
+#LogisticsOS API Key - Provided by Yuzhe
 api_key = "esbZv0Yl6C2KmENg3xVkl1BNcxJo9U345DCIQ8h9"
 
 
 def request(teamid):
     url = "https://api.logisticsos.com/latest/vrp"
-
 
     orders = o.get_orders()
     depot = v.depots(teamid)

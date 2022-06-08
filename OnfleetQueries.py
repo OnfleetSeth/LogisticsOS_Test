@@ -7,7 +7,7 @@ import json
 
 of_api = "b4523670d4ba81be1c6a2084776093eb"
 
-of_from = int(time.mktime((datetime.today() - timedelta(hours=12)).timetuple()) * 1000)  # See timedelta
+of_from = int(time.mktime((datetime.today() - timedelta(hours=24)).timetuple()) * 1000)  # See timedelta
 of_state = 0  # Task state, 0 = Unassigned tasks
 
 
@@ -71,39 +71,56 @@ def get_workers(teamid):
 
 # For now, retrieves all unassigned tasks created since {of_from}, defaulted to -12 hours
 def list_tasks():
-
-    url = f"https://onfleet.com/api/v2/tasks/all?from={of_from}&state={of_state}"
+    tasks = []
+    lastid = ()
 
     payload = {}
     headers = {
         'Authorization': 'Basic ' + encode_b64(of_api)
     }
 
-    response = requests.request("GET", url, headers=headers, data=payload)
+    i = 1
+    while i > 0:
+        if i == 1:
+            url = f"https://onfleet.com/api/v2/tasks/all?from={of_from}&state={of_state}"
 
-    if len(json.loads(response.text)['tasks']) == 0:
-        raise Exception("No unassigned tasks.")
-    else:
-        tasks = json.loads(response.text)['tasks']
+            response = json.loads(requests.request("GET", url, headers=headers, data=payload).text)
 
-    # p.pprint(tasks)
+            lastid = response.get('lastId', '')
+
+            tasks = tasks + response['tasks']
+
+            i += 1
+
+        elif lastid != "":
+
+            url = f"https://onfleet.com/api/v2/tasks/all?from={of_from}&lastId={lastid}&state={of_state}"
+            response = json.loads(requests.request("GET", url, headers=headers, data=payload).text)
+
+            lastid = response.get('lastId', '')
+
+            tasks = tasks + response['tasks']
+            i += 1
+        elif lastid == "":
+            i = 0
+
+    # p.pprint(len(tasks))
     return tasks
 
 
 def assign_tasks(results):
-
-    taskids = []
 
     routes = results['routes']
 
     for r in routes:
         worker_id = r['summary']['vehicle_id']
         stops = r['stops']
+        url = f"https://onfleet.com/api/v2/containers/workers/{worker_id}"
+
+        taskids = []
         for s in stops:
             taskid = s['id']
             taskids.append(taskid)
-
-        url = f"https://onfleet.com/api/v2/containers/workers/{worker_id}"
 
         payload = json.dumps({"tasks": taskids})
         headers = {
@@ -112,5 +129,6 @@ def assign_tasks(results):
 
         response = requests.request("PUT", url, headers=headers, data=payload)
 
-        print(response.text)
-        return
+        # print(response.text)
+
+    return

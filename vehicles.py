@@ -21,18 +21,19 @@ class Vehicles:
                 "duration": "second"
               }
 
-    def __init__(self, workerid, hubid, hublon, hublat, vehicle_type):
+    def __init__(self, workerid, hubid, hublon, hublat, vehicle_type, capacity):
         self.id = workerid
         self.hub = hubid
         self.hublon = hublon
         self.hublat = hublat
         self.vehicleprofile = vehicle_type.lower()
+        self.capacity = capacity
 
         self.vehiclepayload = {
               "id": self.id,
               "profile": self.vehicleprofile,
               "count": 1,
-              "capacity": 100,
+              "capacity": self.capacity,
               "dispatch_after": 0,
               # "dismiss_before": "inf",
               # "max_distance": "inf",
@@ -63,8 +64,9 @@ def get_vehicles(teamid):
     for w in workers:
         workerid = w['id']
         vehicle_type = w['vehicle']['type']
+        capacity = w['capacity']
 
-        vehicle = Vehicles(workerid, hubid, hub_lon, hub_lat, vehicle_type)
+        vehicle = Vehicles(workerid, hubid, hub_lon, hub_lat, vehicle_type, capacity)
 
         vehicles.append(vehicle.vehiclepayload)
 
