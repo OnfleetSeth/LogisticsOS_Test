@@ -7,7 +7,7 @@ import json
 
 of_api = "b4523670d4ba81be1c6a2084776093eb"
 
-of_from = int(time.mktime((datetime.today() - timedelta(hours=24)).timetuple()) * 1000)  # See timedelta
+of_from = int(time.mktime((datetime.today() - timedelta(hours=72)).timetuple()) * 1000)  # See timedelta
 of_state = 0  # Task state, 0 = Unassigned tasks
 
 
