@@ -3,7 +3,7 @@ import requests
 from datetime import datetime
 import time
 from utilities import calc_task_from
-import of_queries as oq
+import of_requests as oq
 import orders as o
 import vehicles as v
 

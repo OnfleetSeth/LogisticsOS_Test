@@ -1,4 +1,4 @@
-import of_queries as oq
+import of_requests as of
 
 
 class Orders:
@@ -51,7 +51,7 @@ class Orders:
 # Instantiate orders
 def get_orders(api_key, task_from, task_state):
     orders = []
-    tasks = oq.list_tasks(api_key, task_from, task_state)
+    tasks = of.list_tasks(api_key, task_from, task_state)
 
     for t in tasks:
         task_id = t['id']

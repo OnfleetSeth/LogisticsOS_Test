@@ -1,4 +1,4 @@
-import of_queries as oq
+import of_requests as of
 
 
 class Vehicles:
@@ -53,12 +53,12 @@ class Vehicles:
 
 def get_vehicles(api_key, team_id):
     vehicles = []
-    hub_id = oq.get_hub_id(api_key, team_id)
-    hub_coord = oq.get_hub_address(api_key, hub_id)
+    hub_id = of.get_hub_id(api_key, team_id)
+    hub_coord = of.get_hub_address(api_key, hub_id)
     hub_lon = hub_coord['lon']
     hub_lat = hub_coord['lat']
 
-    workers = oq.get_workers(api_key, team_id)
+    workers = of.get_workers(api_key, team_id)
 
     for w in workers:
         worker_id = w['id']
@@ -71,9 +71,9 @@ def get_vehicles(api_key, team_id):
 
 
 def get_depots(api_key, team_id):
-    hub_id = oq.get_hub_id(api_key, team_id)
-    hub_lon = oq.get_hub_address(api_key, hub_id)['lon']
-    hub_lat = oq.get_hub_address(api_key, hub_id)['lat']
+    hub_id = of.get_hub_id(api_key, team_id)
+    hub_lon = of.get_hub_address(api_key, hub_id)['lon']
+    hub_lat = of.get_hub_address(api_key, hub_id)['lat']
 
     depots = [
         {
