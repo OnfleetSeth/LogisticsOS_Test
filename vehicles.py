@@ -1,4 +1,4 @@
-import OnfleetQueries as Oq
+import of_queries as oq
 
 
 class Vehicles:
@@ -21,18 +21,18 @@ class Vehicles:
                 "duration": "second"
               }
 
-    def __init__(self, workerid, hubid, hublon, hublat, vehicle_type, capacity):
-        self.id = workerid
-        self.hub = hubid
-        self.hublon = hublon
-        self.hublat = hublat
-        self.vehicleprofile = vehicle_type.lower()
+    def __init__(self, worker_id, hub_id, hub_lon, hub_lat, vehicle_type, capacity):
+        self.id = worker_id
+        self.hub = hub_id
+        self.hub_lon = hub_lon
+        self.hub_lat = hub_lat
+        self.vehicle_profile = vehicle_type.lower()
         self.capacity = capacity
 
-        self.vehiclepayload = {
+        self.vehicle_payload = {
               "id": self.id,
-              "profile": self.vehicleprofile,
-              "count": 1,
+              "profile": self.vehicle_profile,
+              "count": 25,
               "capacity": self.capacity,
               "dispatch_after": 0,
               # "dismiss_before": "inf",
@@ -51,41 +51,38 @@ class Vehicles:
         }
 
 
-def get_vehicles(teamid):
+def get_vehicles(api_key, team_id):
     vehicles = []
-
-    hubid = Oq.get_hub_id(teamid)
-    hub_coord = Oq.get_hub_address(hubid)
+    hub_id = oq.get_hub_id(api_key, team_id)
+    hub_coord = oq.get_hub_address(api_key, hub_id)
     hub_lon = hub_coord['lon']
     hub_lat = hub_coord['lat']
 
-    workers = Oq.get_workers(teamid)
+    workers = oq.get_workers(api_key, team_id)
 
     for w in workers:
-        workerid = w['id']
+        worker_id = w['id']
         vehicle_type = w['vehicle']['type']
         capacity = w['capacity']
-
-        vehicle = Vehicles(workerid, hubid, hub_lon, hub_lat, vehicle_type, capacity)
-
-        vehicles.append(vehicle.vehiclepayload)
+        vehicle = Vehicles(worker_id, hub_id, hub_lon, hub_lat, vehicle_type, capacity)
+        vehicles.append(vehicle.vehicle_payload)
 
     return vehicles
 
 
-def depots(teamid):
-    hubid = Oq.get_hub_id(teamid)
-    hublon = Oq.get_hub_address(hubid)['lon']
-    hublat = Oq.get_hub_address(hubid)['lat']
+def get_depots(api_key, team_id):
+    hub_id = oq.get_hub_id(api_key, team_id)
+    hub_lon = oq.get_hub_address(api_key, hub_id)['lon']
+    hub_lat = oq.get_hub_address(api_key, hub_id)['lat']
 
     depots = [
         {
-            "id": hubid,
+            "id": hub_id,
             "geometry": {
                 "zipcode": "null",
                 "coordinates": {
-                    "lon": hublon,
-                    "lat": hublat}
+                    "lon": hub_lon,
+                    "lat": hub_lat}
             }
         }
     ]
